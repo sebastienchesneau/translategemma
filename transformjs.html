@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test petit LLM Transformers.js</title>
+</head>
+<body>
+    <h1>Test petit LLM en JS</h1>
+    <textarea id="prompt" rows="4" cols="50">Écris une petite histoire sur un chat.</textarea><br>
+    <button id="generateBtn">Générer</button>
+
+    <h2>Résultat :</h2>
+    <pre id="output"></pre>
+
+    <script type="module">
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.js';
+
+        async function initLLM() {
+            // Détecte WebGPU
+            let backend = 'webgl'; // fallback par défaut
+            if (navigator.gpu) {
+                backend = 'webgpu';
+                console.log("WebGPU disponible ✅");
+            } else {
+                console.log("WebGPU indisponible, fallback sur WebGL ⚠️");
+            }
+
+            // Initialise le pipeline text-generation
+            const generator = await pipeline('text-generation', 'Xenova/gpt-small', { progress_callback: (progress) => {
+                console.log(`Chargement modèle: ${Math.round(progress * 100)}%`);
+            }});
+
+            return generator;
+        }
+
+        async function main() {
+            const generator = await initLLM();
+
+            document.getElementById('generateBtn').addEventListener('click', async () => {
+                const prompt = document.getElementById('prompt').value;
+                document.getElementById('output').textContent = "Génération en cours...";
+
+                try {
+                    const result = await generator(prompt, { max_new_tokens: 60 });
+                    document.getElementById('output').textContent = result[0].generated_text;
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('output').textContent = "Erreur lors de la génération : " + err.message;
+                }
+            });
+        }
+
+        main();
+    </script>
+</body>
+</html>

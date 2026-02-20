@@ -3,7 +3,7 @@ import os
 import time
 
 # 📁 Dossier contenant les fichiers .mp3
-audio_folder = "./samples2"
+audio_folder = "./samples"
 
 # 📦 Charger le modèle Whisper (tu peux changer "base" par "tiny", "small", etc.)
 model = whisper.load_model("large-v3")
