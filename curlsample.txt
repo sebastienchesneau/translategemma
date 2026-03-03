@@ -1,0 +1,13 @@
+
+
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "Infomaniak-AI/vllm-translategemma-4b-it",
+    "messages": [
+      {
+        "role": "user",
+        "content": "<<<source>>>en<<<target>>>fr<<<text>>>I wish you a merry Christmas and a Happy New Year!"
+      }
+    ]
+  }'

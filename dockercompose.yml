@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-translategemma
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_TOKEN=
+      - HF_HOME=/models  # indique à Hugging Face où stocker les modèles
+    volumes:
+      - ./testdownload:/models  # volume local pour sauvegarder les modèles/models/hub/models--Intel--Mistral-Small-3.2-24B-Instruct-2506-int4-AutoRound/snapshots/792f42586a806721451a32e9d59ad245fd302017
+    command: >
+      --model Infomaniak-AI/vllm-translategemma-4b-it
+      --max-model-len 1024
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+
+# https://huggingface.co/kaitchup/translategemma-4b-it-FP8-Dynamic
